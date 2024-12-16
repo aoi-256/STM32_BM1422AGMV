@@ -41,11 +41,11 @@ void loop(){
 
 #### 第1引数 出力のスケール
 ```cpp
-scale_12bit //12bit出力
-scale_14bit //14bit出力
+scale_12bit
+scale_14bit
 ```
 
-#### 第1引数 出力レート(ODR)
+#### 第2引数 出力レート(ODR)
 ```cpp
 rate_10hz 
 rate_20hz
