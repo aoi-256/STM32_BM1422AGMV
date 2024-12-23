@@ -14,7 +14,7 @@ BM1422AGMV::BM1422AGMV(I2C_HandleTypeDef* i2c_pin):BM1422AGMV_HAL(i2c_pin){
 
 }
 
-uint8_t BM1422AGMV::activation(){
+uint8_t BM1422AGMV::verify_connection(){
 
 	uint8_t who_am_i = 0x00;
 	uint8_t error_count = 0;
