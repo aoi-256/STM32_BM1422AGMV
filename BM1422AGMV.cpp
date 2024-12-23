@@ -1,78 +1,26 @@
 /*
- * BM1422AGMV.cpp
+ * BM1422AGMV_HAL.cpp
  *
  *  Created on: Dec 16, 2024
- *      Author: aoi25
- *
- *      基本的にデータシートに書いてある手順をそのまま書いています
- *
+ *      Author: Sezakiaoi
  */
 
-#include <BM1422AGMV.h>
+#include <BM1422AGMV_HAL.h>
+#include <i2c.h>
 
-BM1422AGMV::BM1422AGMV(I2C_HandleTypeDef* i2c_pin):BM1422AGMV_HAL(i2c_pin){
+BM1422AGMV_HAL::BM1422AGMV_HAL(I2C_HandleTypeDef *use_i2cPin){
+
+	//使用するピンの情報を受け取る
+	i2c_pin = use_i2cPin;
 
 }
 
-uint8_t BM1422AGMV::activation(){
+void BM1422AGMV_HAL::write(BM1422AGMV_HAL::REGISTER REGISTER_ADDR, uint8_t* command, uint8_t len){
 
-	uint8_t who_am_i = 0x00;
-	uint8_t error_count = 0;
-
-	while(who_am_i != 0x41){
-
-		BM1422AGMV_HAL::read(REGISTER::WIA, &who_am_i, 1);
-		error_count ++;
-
-	}
-
-	return 0;
+	HAL_I2C_Mem_Write(i2c_pin, I2C_ADDR, uint8_t(REGISTER_ADDR), 1, command, len, 10);
 }
 
-uint8_t BM1422AGMV::setting(BM1422AGMV::mode mode, BM1422AGMV::output_rate rate){
+void BM1422AGMV_HAL::read(BM1422AGMV_HAL::REGISTER REGISTER_ADDR, uint8_t* receive_buffer, uint8_t len){
 
-	//12bitmodeでのoutput_rate(odr)設定
-	if(uint8_t(mode) == 0){
-
-		uint8_t CTNL1_command = 0x80 + ((uint8_t)rate << 3);
-		BM1422AGMV_HAL::write(REGISTER::CNTL1, &CTNL1_command, 1);
-	}
-
-	//14bitmodeでのoutput_rate(odr)設定
-	if(uint8_t(mode) == 1){
-
-		uint8_t CTNL1_command = 0xC0 + ((uint8_t)rate << 3);
-		BM1422AGMV_HAL::write(REGISTER::CNTL1, &CTNL1_command, 1);
-	}
-
-	//CTNL4
-	uint8_t CTNL4_command[2] = {};
-	BM1422AGMV_HAL::write(REGISTER::CNTL4, CTNL4_command, 2);
-
-	//CTNL2
-	uint8_t CTNL2_command = 0x0C;
-	BM1422AGMV_HAL::write(REGISTER::CNTL2, &CTNL2_command, 1);
-
-	//CTNL3
-	uint8_t CTNL3_command = 0x40;
-	BM1422AGMV_HAL::write(REGISTER::CNTL3, &CTNL3_command, 1);
-
-	return 0;
-}
-
-uint8_t BM1422AGMV::get_data(int16_t mag_data[3]){
-
-	uint8_t raw_magdata[6] = {};
-	BM1422AGMV_HAL::read(BM1422AGMV::REGISTER::DATA_X, raw_magdata, 6);
-
-	if(raw_magdata[0] == 0 && raw_magdata[2] == 0 && raw_magdata[4] == 0){
-
-		return 1; //データの受信失敗
-	}
-
-	mag_data[0]  = (int16_t)(raw_magdata[0] | raw_magdata[1] << 8);
-	mag_data[1]  = (int16_t)(raw_magdata[2] | raw_magdata[3] << 8);
-	mag_data[2]  = (int16_t)(raw_magdata[4] | raw_magdata[5] << 8);
-
-	return 0;
+	HAL_I2C_Mem_Read(i2c_pin, I2C_ADDR, uint8_t(REGISTER_ADDR), 1, receive_buffer, len, 10);
 }
