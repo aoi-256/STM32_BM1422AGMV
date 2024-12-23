@@ -30,7 +30,7 @@ class BM1422AGMV : private BM1422AGMV_HAL{
 
 		BM1422AGMV(I2C_HandleTypeDef* i2c_pin);
 
-		uint8_t activation();
+		uint8_t verify_connection();
 		uint8_t setting(BM1422AGMV::mode, BM1422AGMV::output_rate);
 		uint8_t get_data(int16_t mag_buffer[3]);
 
