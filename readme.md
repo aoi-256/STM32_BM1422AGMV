@@ -20,7 +20,7 @@ int16_t mag_data[3] = {};
 //1回のみ実行される部分
 void init(){
 
-	bm.activation();
+	bm.verify_connection();
 	bm.setting(bm.mode::scale_14bit, bm.output_rate::rate_1000hz);
 }
 
@@ -75,12 +75,12 @@ setting()の中身は、p16の説明をコードにしたものになります
 
 ## その他
 
-BM1422AGMV::activation()に通信失敗時の処理がありますので、シリアル通信やLEDなど各自でデバックしやすいように使ってください
+BM1422AGMV::verify_connection()に通信失敗時の処理がありますので、シリアル通信やLEDなど各自でデバックしやすいように使ってください
 
 (error_countでif文作るといいかも）
 
 ```cpp
-uint8_t BM1422AGMV::activation(){
+uint8_t BM1422AGMV::verify_connection(){
 
 	uint8_t who_am_i = 0x00;
 	uint8_t error_count = 0;
