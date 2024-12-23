@@ -48,3 +48,56 @@ rate_20hz
 rate_100hz
 rate_1000hz
 ```
+
+## ファイルとクラスについて
+
+### BM1422AGMV_HAL 
+
+i2cのピン設定と通信用の関数を書いています
+
+i2cアドレス、レジスタアドレスはこのクラスで定義しています
+
+### BM1422AGMG
+
+センサーの値取得などの操作を書いています
+
+setting()の引数はこのクラスで定義しています
+
+## 修正や改善をしたい場合
+
+データシートがとても読みやすい（日本語&説明丁寧）ので、こちらを読むことを推奨します
+
+https://akizukidenshi.com/goodsaffix/BM1422AGMV.pdf
+
+setting()の中身は、p16の説明をコードにしたものになります
+
+（いっぱい書いてあるけど、データシートに沿って書くだけです！）
+
+## その他
+
+BM1422AGMV::activation()に通信失敗時の処理がありますので、シリアル通信やLEDなど各自でデバックしやすいように使ってください
+
+(error_countでif文作るといいかも）
+
+```cpp
+uint8_t BM1422AGMV::activation(){
+
+	uint8_t who_am_i = 0x00;
+	uint8_t error_count = 0;
+
+	while(who_am_i != 0x41){
+
+		BM1422AGMV_HAL::read(REGISTER::WIA, &who_am_i, 1);
+		error_count ++;
+
+		//?////////////////////////////////////
+		if(error_count >= 100){
+
+			//エラー時の処理を書く
+		}
+		///////////////////////////////////////
+	}
+
+	return 0;
+}
+```
