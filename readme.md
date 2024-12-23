@@ -90,7 +90,7 @@ uint8_t BM1422AGMV::activation(){
 		BM1422AGMV_HAL::read(REGISTER::WIA, &who_am_i, 1);
 		error_count ++;
 
-		//?////////////////////////////////////
+		//////////////////////////////////////
 		if(error_count >= 100){
 
 			//エラー時の処理を書く
