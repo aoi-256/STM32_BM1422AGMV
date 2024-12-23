@@ -1,36 +1,40 @@
 /*
- * BM1422AGMV.h
+ * BM1422AGMV_HAL.h
  *
  *  Created on: Dec 16, 2024
- *      Author: aoi25
+ *      Author: Sezakiaoi
  */
 
-#ifndef INC_BM1422AGMV_H_
-#define INC_BM1422AGMV_H_
+#ifndef INC_BM1422AGMV_HAL_H_
+#define INC_BM1422AGMV_HAL_H_
 
-#include "BM1422AGMV_HAL.h"
+#include <cstdint>
+#include "i2c.h"
 
-class BM1422AGMV : private BM1422AGMV_HAL{
+class BM1422AGMV_HAL{
 
 	public:
 
-		enum class mode: uint8_t{
+		enum class REGISTER: uint8_t{
 
-			scale_12bit = 0x00,
-			scale_14bit
+			WIA 	= 0x0F,
+			DATA_X  = 0x10,
+			STA1    = 0x18,
+			CNTL1   = 0x1B,
+			CNTL2   = 0x1C,
+			CNTL3   = 0x1D,
+			CNTL4   = 0x5C,
 		};
 
-		enum class output_rate: uint8_t{
+		BM1422AGMV_HAL(I2C_HandleTypeDef* use_i2cPin);
 
-			rate_10hz = 0x00,
-			rate_20hz,
-			rate_100hz,
-			rate_1000hz
-		};
+		void write(BM1422AGMV_HAL::REGISTER, uint8_t* command, uint8_t len);
+		void read(BM1422AGMV_HAL::REGISTER, uint8_t* receive_buffer, uint8_t len);
 
-		uint8_t activation();
-		uint8_t setting(BM1422AGMV::mode, BM1422AGMV::output_rate);
-		uint8_t get_data(int16_t mag_buffer[3]);
+	private:
+
+		uint8_t I2C_ADDR = 0b0001110 << 1;
+		I2C_HandleTypeDef* i2c_pin;
 };
 
-#endif /* INC_BM1422AGMV_H_ */
+#endif /* INC_BM1422AGMV_HAL_H_ */
