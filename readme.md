@@ -7,27 +7,23 @@
 ## サンプルコード
 
 ```cpp
-
 #include "BM1422AGMV.h"
-#include <cstdint>
 
-BM1422AGMV bm;
+BM1422AGMV bm(&hi2c2);
 
 int16_t mag_data[3] = {};
 
-//起動時に1回のみ実行
+//1回のみ実行される部分
 void init(){
 
-    bm.activation();
-    bm.setting(bm.mode::scale_12bit, bm.output_rate::rate_1000hz);
+	bm.activation();
+	bm.setting(bm.mode::scale_14bit, bm.output_rate::rate_1000hz);
 }
 
 //whileでループする部分
 void loop(){
 
-    bm.get_data(mag_data);
-    
-    //通信のコードを書く mag_dataはint16
+	bm.get_data(mag_data);
 }
 ```
 
