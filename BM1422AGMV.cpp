@@ -69,6 +69,8 @@ uint8_t BM1422AGMV::setting(BM1422AGMV::mode mode, BM1422AGMV::output_rate rate)
 }
 
 uint8_t BM1422AGMV::get_data(int16_t mag_data[3]){
+
+	uint8_t raw_data[6] = {};
 	
 	//DATA_Xから6byteを読む
 	BM1422AGMV_HAL::read(BM1422AGMV::REGISTER::DATA_X, raw_data, 6);
